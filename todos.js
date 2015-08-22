@@ -28,6 +28,14 @@ if (Meteor.isClient) {
     'click .toggle-check': function() {
       // Updates '.toggle-check' if the check-box was checked
       Todos.update(this._id, {$set:{checked: ! this.checked}})
+    },
+    // Click event to delete a todo
+    'click .delete-todo': function() {
+      // If check-box is checked
+      if (this.checked) {
+        // Delete todo
+        Todos.remove(this._id);
+      }
     }
   });
 }
