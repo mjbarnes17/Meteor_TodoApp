@@ -11,6 +11,7 @@ if (Meteor.isClient) {
 
   // Template Events
   Template.main.events({
+    // Submit event for new todo
     'submit .new-todo': function(event) {
       var text = event.target.text.value;
       // Creates a new todo
@@ -22,6 +23,11 @@ if (Meteor.isClient) {
       event.target.text.value='';
       // Prevents submit
       return false;
+    },
+    // Click event for the check-box
+    'click .toggle-check': function() {
+      // Updates '.toggle-check' if the check-box was checked
+      Todos.update(this._id, {$set:{checked: ! this.checked}})
     }
   });
 }

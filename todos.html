@@ -31,9 +31,9 @@
   </form>
   <ul>
     {{#each todos}}
-      <li>
+      <li class="{{#if checked}}checked{{/if}}">
         <button class="delete-todo">&times;</button>
-        <input type="checkbox" class="toggle-check">
+        <input type="checkbox" class="toggle-check" checked={{checked}}>
         <span class="text">
           {{text}}
         </span>
