@@ -1,23 +1,32 @@
-if (Meteor.isClient) {
-  // counter starts at 0
-  Session.setDefault('counter', 0);
+Todos = new Mongo.Collection('todos');
 
-  Template.hello.helpers({
-    counter: function () {
-      return Session.get('counter');
+// Runs only on the client side.
+if (Meteor.isClient) {
+  // Template Helpers
+  Template.main.helpers({
+    todos: function() {
+      return Todos.find({}, {sort: {createdAt: -1}});
     }
   });
 
-  Template.hello.events({
-    'click button': function () {
-      // increment the counter when button is clicked
-      Session.set('counter', Session.get('counter') + 1);
+  // Template Events
+  Template.main.events({
+    'submit .new-todo': function(event) {
+      var text = event.target.text.value;
+      // Creates a new todo
+      Todos.insert({
+        text: text,
+        createdAt: new Date()
+      });
+      // Clears form after entering new todo in text input
+      event.target.text.value='';
+      // Prevents submit
+      return false;
     }
   });
 }
 
+// Runs on the server side
 if (Meteor.isServer) {
-  Meteor.startup(function () {
-    // code to run on server at startup
-  });
+
 }
