@@ -17,7 +17,9 @@ if (Meteor.isClient) {
       // Creates a new todo
       Todos.insert({
         text: text,
-        createdAt: new Date()
+        createdAt: new Date(),
+        userId: Meteor.userId(),
+        username: Meteor.user().username
       });
       // Clears form after entering new todo in text input
       event.target.text.value='';
