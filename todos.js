@@ -2,6 +2,8 @@ Todos = new Mongo.Collection('todos');
 
 // Runs only on the client side.
 if (Meteor.isClient) {
+  // Sever subcribes to the client to get todos
+  Meteor.subscribe('todos');
   // Template Helpers
   Template.main.helpers({
     todos: function() {
@@ -44,7 +46,9 @@ if (Meteor.isClient) {
 
 // Runs on the server side
 if (Meteor.isServer) {
-
+  Meteor.publish('todos', function() {
+    return Todos.find();
+  });
 }
 
 // Meteor Methods
