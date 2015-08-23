@@ -14,13 +14,8 @@ if (Meteor.isClient) {
     // Submit event for new todo
     'submit .new-todo': function(event) {
       var text = event.target.text.value;
-      // Creates a new todo
-      Todos.insert({
-        text: text,
-        createdAt: new Date(),
-        userId: Meteor.userId(),
-        username: Meteor.user().username
-      });
+      // Method call to create a new todo
+      Meteor.call('addTodo', text);
       // Clears form after entering new todo in text input
       event.target.text.value='';
       // Prevents submit
@@ -28,15 +23,15 @@ if (Meteor.isClient) {
     },
     // Click event for the check-box
     'click .toggle-check': function() {
-      // Updates '.toggle-check' if the check-box was checked
-      Todos.update(this._id, {$set:{checked: ! this.checked}})
+      // Method call to update '.toggle-check' if the check-box was checked
+      Meteor.call('setChecked', this._id, !this.checked);
     },
     // Click event to delete a todo
     'click .delete-todo': function() {
       // If check-box is checked
       if (this.checked) {
-        // Delete todo
-        Todos.remove(this._id);
+        // Method call to delete todo
+        Meteor.call('deleteTodo', this._id);
       }
     }
   });
@@ -51,3 +46,27 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
 
 }
+
+// Meteor Methods
+Meteor.methods({
+  addTodo: function(text) {
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('This action is not authorized');
+    }
+    // Creates a new tod
+    Todos.insert({
+      text: text,
+      createdAt: new Date(),
+      userId: Meteor.userId(),
+      username: Meteor.user().username
+    });
+  },
+  deleteTodo: function(todoId) {
+    // Delete todo
+    Todos.remove(todoId);
+  },
+  setChecked: function(todoId, setChecked) {
+    // Updates '.toggle-check' if the check-box was checked
+    Todos.update(todoId, {$set:{checked: setChecked}});
+  }
+});
