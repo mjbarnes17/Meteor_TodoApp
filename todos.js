@@ -47,7 +47,14 @@ if (Meteor.isClient) {
 // Runs on the server side
 if (Meteor.isServer) {
   Meteor.publish('todos', function() {
-    return Todos.find();
+    // If user is not logged in
+    if (!this.userId) {
+      // Show all todos
+      return Todos.find();
+    } else {
+      // Else only show the user their own todos
+      return Todos.find({userId: this.userId});
+    }
   });
 }
 
@@ -66,10 +73,24 @@ Meteor.methods({
     });
   },
   deleteTodo: function(todoId) {
+    // Assigns the current todoId being passed in
+    var todo = Todos.findOne(todoId);
+    // If the current todo does not belong to the logged in user
+    if (todo.userId !== Meteor.userId()) {
+      // An error is thrown
+      throw new Meteor.Error('This action is not authorized');
+    }
     // Delete todo
     Todos.remove(todoId);
   },
   setChecked: function(todoId, setChecked) {
+    // Assigns the current todoId being passed in
+    var todo = Todos.findOne(todoId);
+    // If the current todo does not belong to the logged in user
+    if (todo.userId !== Meteor.userId()) {
+      // An error is thrown
+      throw new Meteor.Error('This action is not authorized');
+    }
     // Updates '.toggle-check' if the check-box was checked
     Todos.update(todoId, {$set:{checked: setChecked}});
   }
