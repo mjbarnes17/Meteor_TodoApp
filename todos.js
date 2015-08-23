@@ -38,6 +38,11 @@ if (Meteor.isClient) {
       }
     }
   });
+
+  // Accounts-ui config
+  Accounts.ui.config({
+    passwordSignupFields: 'USERNAME_ONLY'
+  });
 }
 
 // Runs on the server side
